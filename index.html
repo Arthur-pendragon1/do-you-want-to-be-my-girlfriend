@@ -31,6 +31,8 @@
 
         .buttons {
             display: flex;
+            justify-content: center;
+            align-items: center;
             gap: 20px;
             margin-top: 20px;
         }
@@ -53,6 +55,11 @@
             background-color: red;
         }
 
+        #yesBtn {
+            transform-origin: center center;
+            transition: transform 0.1s ease;
+        }
+
         /* Pesan setelah klik YES */
         .success-msg {
             font-size: 48px;
@@ -65,36 +72,62 @@
 
     <div id="root">
         <div id="container">
-            <img id="bearImage" src="https://media.tenor.com/VIChDO6ejRDAAAAj/jumping-bear-hearts-no-png.gif" alt="Bears">
+            <img id="bearImage" src="https://media.tenor.com/VIChDQ6ejRQAAAAj/jumping-bear-hearts-no-png.gif" alt="Bears">
             
             <h1 id="question">Will you be my Valentine? 💖</h1>
             
             <div class="buttons" id="buttonGroup">
                 <button class="btn" id="yesBtn" onclick="showSuccess()">Yes</button>
-                <button class="btn" id="noBtn" onmouseover="moveButton()">No</button>
+                <button class="btn" id="noBtn" onclick="growYesButton()">No</button>
             </div>
         </div>
     </div>
 
     <script>
+        let yesScale = 1;
+        let growInterval = null;
+        let noClickCount = 0;
+        const noMessages = [
+            "No",
+            "Pretty please? 🥺",
+            "But we'd be so cute together! 💕",
+            "One more chance, pookie?",
+            "Don't break my heart :(",
+            "What about a maybe?"
+        ];
+
         // Fungsi saat tombol "Yes" diklik
         function showSuccess() {
             const container = document.getElementById('container');
             container.innerHTML = `
-                <img src="https://media.tenor.com/flxnRxTRxLAAAAAj/bears-with-kisses-bg.gif" alt="Kisses">
+                <img src="https://media.tenor.com/Fh39BC4pwNAAAAAd/snuggles-snuggle.gif" alt="Kisses">
                 <div class="success-msg">Yay!!! ❤️🥰</div>
             `;
         }
 
-        // Fungsi opsional: Membuat tombol "No" berpindah-pindah saat didekati mouse
-        function moveButton() {
+        // Fungsi saat tombol "No" diklik: mengubah teks dan membuat tombol "Yes" membesar terus menerus
+        function growYesButton() {
+            const yesBtn = document.getElementById('yesBtn');
             const noBtn = document.getElementById('noBtn');
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
             
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+            // Ubah teks tombol No
+            noClickCount++;
+            if (noClickCount < noMessages.length) {
+                noBtn.textContent = noMessages[noClickCount];
+            }
+            
+            // Mulai membuat tombol Yes membesar
+            if (growInterval) return;
+
+            growInterval = setInterval(() => {
+                yesScale += 0.05;
+                yesBtn.style.transform = `scale(${yesScale})`;
+
+                if (yesScale >= 3) {
+                    clearInterval(growInterval);
+                    growInterval = null;
+                }
+            }, 100);
         }
     </script>
 
