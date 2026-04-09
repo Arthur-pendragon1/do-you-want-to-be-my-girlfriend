@@ -98,6 +98,12 @@
 
         // Fungsi saat tombol "Yes" diklik
         function showSuccess() {
+            // Hentikan pertumbuhan tombol jika ada
+            if (growInterval) {
+                clearInterval(growInterval);
+                growInterval = null;
+            }
+            
             const container = document.getElementById('container');
             container.innerHTML = `
                 <img src="https://media.tenor.com/Fh39BC4pwNAAAAAd/snuggles-snuggle.gif" alt="Kisses">
@@ -105,7 +111,7 @@
             `;
         }
 
-        // Fungsi saat tombol "No" diklik: mengubah teks dan membuat tombol "Yes" membesar terus menerus
+        // Fungsi saat tombol "No" diklik: setiap klik membuat tombol "Yes" membesar sedikit
         function growYesButton() {
             const yesBtn = document.getElementById('yesBtn');
             const noBtn = document.getElementById('noBtn');
@@ -116,18 +122,20 @@
                 noBtn.textContent = noMessages[noClickCount];
             }
             
-            // Mulai membuat tombol Yes membesar
-            if (growInterval) return;
+            // Hentikan interval yang lama jika ada
+            if (growInterval) {
+                clearInterval(growInterval);
+                growInterval = null;
+            }
 
-            growInterval = setInterval(() => {
-                yesScale += 0.05;
-                yesBtn.style.transform = `scale(${yesScale})`;
-
-                if (yesScale >= 3) {
-                    clearInterval(growInterval);
-                    growInterval = null;
-                }
-            }, 100);
+            // Setiap klik tombol No, tombol Yes membesar sedikit saja
+            yesScale += 0.2;
+            yesBtn.style.transform = `scale(${yesScale})`;
+            
+            if (yesScale >= 3) {
+                // Jika sudah cukup besar, disable tombol No
+                noBtn.disabled = true;
+            }
         }
     </script>
 
